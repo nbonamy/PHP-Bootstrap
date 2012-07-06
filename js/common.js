@@ -1,2 +1,3 @@
 
-var g_default_thumb = 'img/roll.png';
+// overwrite some alert globals
+$.alertGlobals.title = 'PHP Bootstrap';
