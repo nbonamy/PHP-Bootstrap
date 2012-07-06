@@ -8,8 +8,12 @@ function render($tmpl, $args = array()) {
 	// setup twig on templates without cache
 	$loader = new Twig_Loader_Filesystem('templates');
 	$twig = new Twig_Environment($loader, array(
+			'debug' => true,
       'cache' => false
 	));
+
+	// add extensions
+	$twig->addExtension(new Twig_Extension_Debug());
 
 	// add globals
 	$args['session'] = $_SESSION;

@@ -1,28 +1,53 @@
 <?php
 
-// to update string setting
-function update_string_config_from_request($key, $config) {
-	if (isset($_REQUEST[$key])) {
-		Globals::$Config->set(CFG_SECTION_MAIN, $config, $_REQUEST[$key]);
-	}
-}
+class Config {
 
-// to update bool setting
-function update_bool_config_from_request($key, $config) {
-	if (isset($_REQUEST[$key])) {
-		Globals::$Config->set(CFG_SECTION_MAIN, $config, Globals::$Config->toBool(is_checked($_REQUEST[$key])));
-	} else {
-		Globals::$Config->set(CFG_SECTION_MAIN, $config, Globals::$Config->toBool(false));
+	// initialize
+	public static function init() {
+		Config::load();
 	}
-}
 
-// to set a default value
-function config_set_default($key, $default) {
-	if (Globals::$Config->has(CFG_SECTION_MAIN, $key) === false) {
-		Globals::$Config->set(CFG_SECTION_MAIN, $key, $default);
+	// load from configuration file
+	public static function load() {
+		Globals::$Config = new Config_Lite(CONFIG_FILE);
 	}
-}
 
-// load config and init default values
-Globals::$Config = new Config_Lite(CONFIG_FILE);
-Globals::$Config->save();
+	// save to file
+	public static function save() {
+		Globals::$Config->save();
+	}
+
+	// sets the configuration value $key to $default if it is not set previously
+	public static function setDefaultValue($key, $default) {
+		if (Globals::$Config->has(CFG_DEFAULT_SECTION, $key) === false) {
+			Globals::$Config->set(CFG_DEFAULT_SECTION, $key, $default);
+		}
+	}
+
+	// gets a value from default section
+	public static function get($key) {
+		return Globals::$Config->get(CFG_DEFAULT_SECTION, $key);
+	}
+
+	// sets a value in default section
+	public static function set($key, $value) {
+		return Globals::$Config->set(CFG_DEFAULT_SECTION, $key, $value);
+	}
+
+	// sets the configuration value $config to $_REQUEST[$key] as a string
+	public static function setStringFromRequet($key, $config) {
+		if (isset($_REQUEST[$key])) {
+			Globals::$Config->set(CFG_DEFAULT_SECTION, $config, $_REQUEST[$key]);
+		}
+	}
+
+	// sets the configuration value $config to $_REQUEST[$key] as a boolean
+	public static function setBoolFromRequet($key, $config) {
+		if (isset($_REQUEST[$key])) {
+			Globals::$Config->set(CFG_DEFAULT_SECTION, $config, Globals::$Config->toBool(is_checked($_REQUEST[$key])));
+		} else {
+			Globals::$Config->set(CFG_DEFAULT_SECTION, $config, Globals::$Config->toBool(false));
+		}
+	}
+
+}

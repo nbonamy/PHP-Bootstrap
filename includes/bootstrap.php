@@ -21,3 +21,12 @@ require_once('includes/config.php');
 // init stuff
 session_start();
 date_default_timezone_set('UTC');
+
+// load configuration
+// you can enforce default values
+// using Config::setDefaultValue
+// and then issue Config::save
+Config::load();
+Config::setDefaultValue('val1', 'bonjour');
+Config::setDefaultValue('val2', true);
+Config::save();
